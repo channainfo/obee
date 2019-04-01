@@ -1,0 +1,30 @@
+<h1>Listing Pages</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Body</th>
+      <th>Views</th>
+       <th>Author</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for page <- @pages do %>
+    <tr>
+      <td><%= page.title %></td>
+      <td><%= page.body %></td>
+      <td><%= page.views %></td>
+      <td><%= author_name(page) %></td>
+      <td>
+        <%= link "Show", to: Routes.cms_page_path(@conn, :show, page) %>
+        <%= link "Edit", to: Routes.cms_page_path(@conn, :edit, page) %>
+        <%= link "Delete", to: Routes.cms_page_path(@conn, :delete, page), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Page", to: Routes.cms_page_path(@conn, :new) %></span>

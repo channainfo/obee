@@ -1,0 +1,28 @@
+<h1>Show Page</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @page.title %>
+  </li>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @page.body %>
+  </li>
+
+  <li>
+    <strong>Views:</strong>
+    <%= @page.views %>
+  </li>
+
+  <li>
+    <strong>Author:</strong>
+    <%= author_name(@page) %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.cms_page_path(@conn, :edit, @page) %></span>
+<span><%= link "Back", to: Routes.cms_page_path(@conn, :index) %></span>
