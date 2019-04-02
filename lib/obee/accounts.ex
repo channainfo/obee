@@ -46,6 +46,13 @@ defmodule Obee.Accounts do
     |> Repo.preload(:credential)
   end
 
+  def get_user(id) do
+    # Repo.get!(User, id)
+    User
+    |> Repo.get(id)
+    |> Repo.preload(:credential)
+  end
+
   @doc """
   Creates a user.
 
@@ -222,7 +229,8 @@ defmodule Obee.Accounts do
 
 
 
-  def authenticate_by_email_password(email, _password) do
+  def authenticate_by_email_password(email, password) do
+    password_hash = Comeonin.Pbkdf2.hashpwsalt(password)
     query =
       from u in User,
       inner_join: c in assoc(u, :credential),
@@ -231,6 +239,29 @@ defmodule Obee.Accounts do
     case Repo.one(query) do
       %User{} = user -> {:ok, user}
       nil -> { :error, :unauthorized }
+    end
+  end
+
+
+  def get_user_by_email(email) do
+    from(u in User, join: c in assoc(u, :credential), where: c.email == ^email )
+    |> Repo.one()
+    |> Repo.preload(:credential)
+  end
+
+  def authenticate_by_email_and_pass(email, given_pass) do
+    user = get_user_by_email(email)
+    IO.inspect("****************User******************")
+    IO.inspect(user)
+
+    cond do
+      user && Comeonin.Pbkdf2.checkpw(given_pass, user.credential.password_hash) ->
+        {:ok, user}
+      user ->
+        {:error, :unauthorized}
+      true ->
+        {Comeonin.Pbkdf2.dummy_checkpw()}
+        {:error, :not_found}
     end
   end
 end
