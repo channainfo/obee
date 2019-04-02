@@ -4,6 +4,8 @@ defmodule ObeeWeb.UserController do
   alias Obee.Accounts
   alias Obee.Accounts.User
 
+  plug :authenticate when action in [:index, :show]
+
   def index(conn, _params) do
     users = Accounts.list_users()
     render(conn, "index.html", users: users)
@@ -24,6 +26,7 @@ defmodule ObeeWeb.UserController do
         end
 
         conn
+        |> ObeeWeb.Auth.login(user)
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.user_path(conn, :show, user))
 
@@ -64,5 +67,18 @@ defmodule ObeeWeb.UserController do
     conn
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: Routes.user_path(conn, :index))
+  end
+
+  # plug contracts have 2 vars conn and opts
+  defp authenticate(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be loggin in to access hat pag")
+      |> redirect(to: Routes.session_path(conn, :new))
+      |> halt()
+
+    end
   end
 end

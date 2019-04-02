@@ -9,15 +9,13 @@ defmodule ObeeWeb.SessionController do
   end
 
   def create(conn, %{ "user" => %{ "email" => email, "password" => password } }) do
-    case Accounts.authenticate_by_email_password(email, password) do
-      {:ok, user} ->
+    case ObeeWeb.Auth.login_by_email_and_pass(conn, email, password) do
+      {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
-        |> put_session(:user_id, user.id)
-        |> configure_session(renew: true)
-        |> redirect(to: "/")
+        |> redirect(to: Routes.user_path(conn, :index))
 
-      {:error, :unauthorized} ->
+      {:error, _reason, conn} ->
         conn
         |> put_flash(:error, "Incorrect email/password combination")
         |> redirect(to: Routes.session_path(conn, :new))
@@ -26,7 +24,9 @@ defmodule ObeeWeb.SessionController do
 
   def delete(conn, _) do
     conn
-    |> configure_session(drop: true)
-    |> redirect(to: "/")
+    |> ObeeWeb.Auth.logout()
+    |> redirect(to: Routes.session_path(conn, :new))
   end
+
+
 end

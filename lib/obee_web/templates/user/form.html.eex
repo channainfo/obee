@@ -27,8 +27,6 @@
       <%= label cf, :email %>
       <%= text_input cf, :email %>
       <%= error_tag cf, :email %>
-
-
       <%= label cf, :password, placeholder: "Password" %>
       <%= password_input cf, :password, placeholder: "Password" %>
       <%= error_tag cf, :password %>
