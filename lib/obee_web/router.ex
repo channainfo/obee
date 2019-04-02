@@ -16,14 +16,14 @@ defmodule ObeeWeb.Router do
 
   scope "/", ObeeWeb do
     pipe_through :browser
-
     get "/", PageController, :index
-    get "/hello", HelloController, :index
-    get "/hello/:messenger", HelloController, :show
-
     resources "/users", UserController
-
     resources "/sessions", SessionController, only: [:new, :create, :delete], singleton: true
+  end
+
+  scope "/manage", ObeeWeb do
+    pipe_through [:browser, :authenticate_user]
+    resources "/videos", VideoController
   end
 
   scope "/cms", ObeeWeb.CMS, as: :cms do
@@ -31,24 +31,25 @@ defmodule ObeeWeb.Router do
     resources "/pages", PageController
   end
 
+
   # Other scopes may use custom stacks.
   # scope "/api", ObeeWeb do
   #   pipe_through :api
   # end
 
 
-  defp authenticate_user(conn, _) do
-    case get_session(conn, :user_id) do
-      nil ->
-        conn
-        |> Phoenix.Controller.put_flash(:error, "Login required")
-        |> Phoenix.Controller.redirect(to: "/")
-        |> halt()
+  # defp authenticate_user(conn, _) do
+  #   case get_session(conn, :user_id) do
+  #     nil ->
+  #       conn
+  #       |> Phoenix.Controller.put_flash(:error, "Login required")
+  #       |> Phoenix.Controller.redirect(to: "/")
+  #       |> halt()
 
-      user_id ->
-        assign(conn, :current_user, Obee.Accounts.get_user!(user_id))
-    end
-  end
+  #     user_id ->
+  #       assign(conn, :current_user, Obee.Accounts.get_user!(user_id))
+  #   end
+  # end
 
 end
 

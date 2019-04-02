@@ -23,6 +23,10 @@ defmodule ObeeWeb do
 
       import Plug.Conn
       import ObeeWeb.Gettext
+
+      # APP Level import
+      import ObeeWeb.Auth, only: [ authenticate_user: 2 ]
+
       alias ObeeWeb.Router.Helpers, as: Routes
     end
   end
@@ -51,6 +55,9 @@ defmodule ObeeWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+
+      # APP level import
+      import ObeeWeb.Auth, only: [ authenticate_user: 2 ]
     end
   end
 

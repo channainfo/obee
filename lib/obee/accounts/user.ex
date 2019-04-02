@@ -3,6 +3,7 @@ defmodule Obee.Accounts.User do
   import Ecto.Changeset
 
   alias Obee.Accounts.Credential
+  alias Obee.Multimedia.Video
 
   schema "users" do
     field :first_name, :string
@@ -11,6 +12,7 @@ defmodule Obee.Accounts.User do
 
     # Relation
     has_one :credential, Credential
+    has_many :videos, Video
 
     timestamps()
   end
