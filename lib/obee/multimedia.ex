@@ -7,7 +7,9 @@ defmodule Obee.Multimedia do
   alias Obee.Repo
 
   alias Obee.Multimedia.Video
+  alias Obee.Multimedia.Category
   alias Obee.Accounts.User
+
 
   @doc """
   Returns the list of videos.
@@ -132,7 +134,17 @@ defmodule Obee.Multimedia do
   end
 
   def preload_user(video_or_videos) do
-    Repo.preload(video_or_videos, :user)
+    Repo.preload(video_or_videos, [:user, :category])
+  end
+
+  def create_category(name) do
+    Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
+  end
+
+  def list_alphabetical_categories do
+    Category
+    |> Category.alphabetical()
+    |> Repo.all()
   end
 
 

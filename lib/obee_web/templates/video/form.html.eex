@@ -13,10 +13,14 @@
   <%= textarea f, :description %>
   <%= error_tag f, :description %>
 
+  <%= label f, :category_id %>
+  <%= select f, :category_id, category_select_options(@categories), prompt: "Choose a category" %>
+  <%= error_tag f, :category_id %>
+
   <%= label f, :url %>
   <%= text_input f, :url %>
   <%= error_tag f, :url %>
-
+  
   <div>
     <%= submit "Save" %>
   </div>

@@ -5,6 +5,7 @@
     <tr>
       <th>Title</th>
       <th>Url</th>
+      <th>Category</th>
       <th>Description</th>
 
       <th></th>
@@ -15,12 +16,13 @@
     <tr>
       <td><%= video.title %></td>
       <td><%= video.url %></td>
+      <td><%= video.category.name %></td>
       <td><%= video.description %></td>
 
       <td>
-        <%= link "Show", to: Routes.video_path(@conn, :show, video) %>
-        <%= link "Edit", to: Routes.video_path(@conn, :edit, video) %>
-        <%= link "Delete", to: Routes.video_path(@conn, :delete, video), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link "Edit", to: Routes.video_path(@conn, :edit, video) %> | 
+        <%= link "Delete", to: Routes.video_path(@conn, :delete, video), method: :delete, data: [confirm: "Are you sure?"] %> | 
+        <%= link "Watch", to: Routes.watch_path(@conn, :show, video) %>
       </td>
     </tr>
 <% end %>

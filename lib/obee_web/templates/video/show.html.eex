@@ -1,5 +1,5 @@
 <h1>Show Video</h1>
-
+<%= %>
 <ul>
 
   <li>
@@ -13,8 +13,18 @@
   </li>
 
   <li>
+    <strong>Category:</strong>
+    <%= @video.category.name %>
+  </li>
+
+  <li>
     <strong>Description:</strong>
     <%= @video.description %>
+  </li>
+
+  <li>
+    <strong>Slug:</strong>
+    <%= @video.slug %>
   </li>
 
 </ul>

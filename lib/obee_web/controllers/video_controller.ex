@@ -4,6 +4,8 @@ defmodule ObeeWeb.VideoController do
   alias Obee.Multimedia
   alias Obee.Multimedia.Video
 
+  plug :load_categories when action in [:new, :create, :edit, :update]
+
   def index(conn, _params, current_user) do
     videos = Multimedia.list_user_videos(current_user)
     render(conn, "index.html", videos: videos)
@@ -33,8 +35,6 @@ defmodule ObeeWeb.VideoController do
 
   def edit(conn, %{"id" => id}, current_user) do
     video = Multimedia.get_user_video!(current_user, id)
-    IO.inspect("88888888888888")
-    IO.inspect(video)
     changeset = Multimedia.change_video(current_user, video)
     render(conn, "edit.html", video: video, changeset: changeset)
   end
@@ -71,5 +71,10 @@ defmodule ObeeWeb.VideoController do
   def action(conn, _) do
     args = [conn, conn.params, conn.assigns.current_user]
     apply(__MODULE__, action_name(conn), args)
-    end
+  end
+
+  defp load_categories(conn, _) do
+    assign(conn, :categories, Multimedia.list_alphabetical_categories())
+  end
+
 end

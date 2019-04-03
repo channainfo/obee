@@ -1,9 +1,6 @@
 defmodule ObeeWeb.SessionController do
   use ObeeWeb, :controller
 
-  alias Obee.Accounts
-
-
   def new(conn, _) do
     render(conn, "new.html")
   end

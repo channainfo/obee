@@ -19,7 +19,7 @@ defmodule ObeeWeb.CMS.PageController do
     else
       conn
       |> put_flash(:error, "You can't modify that page")
-      |> redirect(to: Route.cms_page_path(conn, :index))
+      |> redirect(to: Routes.cms_page_path(conn, :index))
       |> halt()
     end
   end
@@ -52,7 +52,6 @@ defmodule ObeeWeb.CMS.PageController do
       |> CMS.get_page!()
       |> CMS.inc_page_views()
 
-    page = CMS.get_page!(id)
     render(conn, "show.html", page: page)
   end
 

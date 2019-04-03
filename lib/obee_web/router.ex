@@ -19,6 +19,9 @@ defmodule ObeeWeb.Router do
     get "/", PageController, :index
     resources "/users", UserController
     resources "/sessions", SessionController, only: [:new, :create, :delete], singleton: true
+
+    get "/watch/:id", WatchController, :show
+
   end
 
   scope "/manage", ObeeWeb do
