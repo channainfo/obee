@@ -4,6 +4,7 @@ defmodule Obee.Multimedia.Video do
 
   alias Obee.Accounts.User
   alias Obee.Multimedia.Category
+  alias Obee.Multimedia.Annotation
 
   @primary_key {:id, Obee.Multimedia.Permalink, autogenerate: true}
 
@@ -15,6 +16,7 @@ defmodule Obee.Multimedia.Video do
 
     belongs_to :user, User
     belongs_to :category, Category
+    has_many :annotations, Annotation
 
     timestamps()
   end
