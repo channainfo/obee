@@ -17,7 +17,6 @@ defmodule ObeeWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    IO.inspect user_params
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         if upload = user_params["photo"] do
@@ -48,6 +47,9 @@ defmodule ObeeWeb.UserController do
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
+    IO.inspect("-----------------------------------------------")
+    IO.inspect(user)
+    IO.inspect user_params
 
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->

@@ -22,6 +22,7 @@ defmodule Obee.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Obee.DataCase
+      import Obee.TestHelpers
     end
   end
 

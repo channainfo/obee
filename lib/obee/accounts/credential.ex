@@ -26,12 +26,14 @@ defmodule Obee.Accounts.Credential do
     |> validate_length(:password, min: 8, max: 256)
     |> unique_constraint(:email)
     |> put_pass_hash()
+
   end
 
   def put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass} } ->
         put_change(changeset, :password_hash, Comeonin.Pbkdf2.hashpwsalt(pass))
+        Ecto.Changeset.put_change(changeset, :password, nil)
 
       _ ->
         changeset

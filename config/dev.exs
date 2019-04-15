@@ -7,7 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :obee, ObeeWeb.Endpoint,
-  http: [port: 4000],
+  http: [port:  System.get_env("PORT") || 4000 ], # PORT=5000 mix phx.server
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

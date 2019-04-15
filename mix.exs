@@ -53,7 +53,8 @@ defmodule Obee.MixProject do
 
       # Password hashing
       {:comeonin, "~> 4.1"},
-      {:pbkdf2_elixir, "~> 0.12"}
+      {:pbkdf2_elixir, "~> 0.12"},
+      {:torch, "~> 2.0.0-rc.1"}
     ]
   end
 

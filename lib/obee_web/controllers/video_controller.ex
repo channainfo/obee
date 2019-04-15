@@ -16,8 +16,24 @@ defmodule ObeeWeb.VideoController do
     render(conn, "new.html", changeset: changeset)
   end
 
+  @spec create(Plug.Conn.t(), map(), Obee.Accounts.User.t()) :: Plug.Conn.t()
   def create(conn, %{"video" => video_params}, current_user) do
-    case Multimedia.create_video(current_user, video_params) do
+    url = video_params["url"]
+
+    if(upload = video_params["file"]) do
+      # extension = Path.extname(upload.filename)
+      url = "/media/#{current_user.id}-#{upload.filename}"
+      File.cp(upload.path, url)
+    end
+
+
+
+    attrs = Map.put(video_params, "url", url)
+
+    IO.inspect(String.duplicate("*", 120))
+    IO.inspect(attrs)
+
+    case Multimedia.create_video(current_user, attrs ) do
       {:ok, video} ->
         conn
         |> put_flash(:info, "Video created successfully.")

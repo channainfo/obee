@@ -9,10 +9,18 @@ defmodule Obee.Multimedia.Video do
   @primary_key {:id, Obee.Multimedia.Permalink, autogenerate: true}
 
   schema "videos" do
-    field :description, :string
     field :title, :string
-    field :url, :string
     field :slug, :string
+    field :url, :string
+    field :description, :string
+
+    field :imdb_id, :string
+    field :tmdb_id, :string
+    field :duration, :integer
+    field :released_year, :integer
+    field :public_rating, :float
+
+    field :file, :string, virtual: true
 
     belongs_to :user, User
     belongs_to :category, Category

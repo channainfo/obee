@@ -19,6 +19,13 @@ defmodule ObeeWeb.Endpoint do
     at: "/uploads",
     from: "/media"
 
+  plug( Plug.Static,
+    at: "/torch",
+    from: {:torch, "priv/static"},
+    gzip: true,
+    cache_control_for_etags: "public, max-age=86400")
+
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
@@ -33,7 +40,7 @@ defmodule ObeeWeb.Endpoint do
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    length: 8_000_000,
+    length: 5 * 1024 * 1024 * 1024 ,
     json_decoder: Phoenix.json_library()
 
 

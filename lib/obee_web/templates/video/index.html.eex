@@ -16,7 +16,7 @@
     <tr>
       <td><%= video.title %></td>
       <td><%= video.url %></td>
-      <td><%= video.category.name %></td>
+      <td><%= category_name(video.category) %></td>
       <td><%= video.description %></td>
 
       <td>

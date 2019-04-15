@@ -6,4 +6,14 @@ defmodule ObeeWeb.VideoView do
       {category.name, category.id}
     end
   end
+
+
+  def category_name(category) when is_nil(category) do
+    ""
+  end
+
+  def category_name(category) do
+    category.name
+  end
+
 end

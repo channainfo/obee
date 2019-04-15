@@ -6,18 +6,22 @@ defmodule Obee.AccountsTest do
   describe "users" do
     alias Obee.Accounts.User
 
-    @valid_attrs %{first_name: "some first_name", last_name: "some last_name", username: "some username"}
-    @update_attrs %{first_name: "some updated first_name", last_name: "some updated last_name", username: "some updated username"}
+    @valid_attrs %{ first_name: "some first_name",
+                    last_name: "some last_name",
+                    username: "some username",
+                    credential: %{ email: "joe@gmail.com", password: "12345678" }
+                  }
+
+    @update_attrs %{ first_name: "some updated first_name",
+                     last_name: "some updated last_name",
+                     username: "some updated username",
+                     credential: %{ email: "foo@gmail.com", password: "12345678"}
+                  }
+
+
     @invalid_attrs %{first_name: nil, last_name: nil, username: nil}
 
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
 
-      user
-    end
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -34,6 +38,7 @@ defmodule Obee.AccountsTest do
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
       assert user.username == "some username"
+      assert user.credential.email == "joe@gmail.com"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -41,11 +46,36 @@ defmodule Obee.AccountsTest do
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
+      old_user = user_fixture()
+      # old_user = Accounts.get_user!(user.id)
+
+      credential = %{
+        email: "updated@gmail.com",
+        id: old_user.credential.id,
+        password: "12345687"
+      }
+
+      attrs = Map.put(@update_attrs, :credential, credential)
+
+      # IO.inspect(" new attrs -------------------")
+      # IO.inspect(attrs)
+
+      # case Accounts.update_user(old_user, attrs) do
+      #   {:ok, user} ->
+      #     IO.inspect("update successully")
+      #     IO.inspect(user)
+      #   {:error, error} ->
+      #     IO.inspect("fail to update")
+      #     IO.inspect(error)
+      # end
+
+      assert {:ok, %User{} = user} = Accounts.update_user(old_user, attrs)
       assert user.first_name == "some updated first_name"
       assert user.last_name == "some updated last_name"
       assert user.username == "some updated username"
+      assert user.credential.email == "updated@gmail.com"
+      assert user.id == old_user.id
+      assert user.credential.id == old_user.credential.id
     end
 
     test "update_user/2 with invalid data returns error changeset" do
@@ -66,62 +96,4 @@ defmodule Obee.AccountsTest do
     end
   end
 
-  describe "credentials" do
-    alias Obee.Accounts.Credential
-
-    @valid_attrs %{email: "some email"}
-    @update_attrs %{email: "some updated email"}
-    @invalid_attrs %{email: nil}
-
-    def credential_fixture(attrs \\ %{}) do
-      {:ok, credential} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_credential()
-
-      credential
-    end
-
-    test "list_credentials/0 returns all credentials" do
-      credential = credential_fixture()
-      assert Accounts.list_credentials() == [credential]
-    end
-
-    test "get_credential!/1 returns the credential with given id" do
-      credential = credential_fixture()
-      assert Accounts.get_credential!(credential.id) == credential
-    end
-
-    test "create_credential/1 with valid data creates a credential" do
-      assert {:ok, %Credential{} = credential} = Accounts.create_credential(@valid_attrs)
-      assert credential.email == "some email"
-    end
-
-    test "create_credential/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_credential(@invalid_attrs)
-    end
-
-    test "update_credential/2 with valid data updates the credential" do
-      credential = credential_fixture()
-      assert {:ok, %Credential{} = credential} = Accounts.update_credential(credential, @update_attrs)
-      assert credential.email == "some updated email"
-    end
-
-    test "update_credential/2 with invalid data returns error changeset" do
-      credential = credential_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_credential(credential, @invalid_attrs)
-      assert credential == Accounts.get_credential!(credential.id)
-    end
-
-    test "delete_credential/1 deletes the credential" do
-      credential = credential_fixture()
-      assert {:ok, %Credential{}} = Accounts.delete_credential(credential)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_credential!(credential.id) end
-    end
-
-    test "change_credential/1 returns a credential changeset" do
-      credential = credential_fixture()
-      assert %Ecto.Changeset{} = Accounts.change_credential(credential)
-    end
-  end
 end
