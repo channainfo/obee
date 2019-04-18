@@ -21,6 +21,8 @@ defmodule ObeeWeb.ConnCase do
       use Phoenix.ConnTest
       alias ObeeWeb.Router.Helpers, as: Routes
 
+      import Obee.TestHelpers
+
       # The default endpoint for testing
       @endpoint ObeeWeb.Endpoint
     end

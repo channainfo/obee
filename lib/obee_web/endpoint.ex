@@ -17,7 +17,7 @@ defmodule ObeeWeb.Endpoint do
 
   plug Plug.Static,
     at: "/uploads",
-    from: "/media"
+    from: "media"
 
   plug( Plug.Static,
     at: "/torch",

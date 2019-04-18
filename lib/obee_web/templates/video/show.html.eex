@@ -14,7 +14,7 @@
 
   <li>
     <strong>Category:</strong>
-    <%= @video.category.name %>
+    <%= category_name(@video.category) %>
   </li>
 
   <li>

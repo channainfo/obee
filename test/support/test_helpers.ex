@@ -24,7 +24,7 @@ defmodule Obee.TestHelpers do
     valid_attrs =  %{ first_name: "some first_name",
                       last_name: "some last_name",
                       username: "some username",
-                      credential: %{ email: "joe@gmail.com", password: "12345678" }
+                      credential: %{ email: "joe#{System.unique_integer()}@gmail.com", password: "12345678" }
                   }
 
     {:ok, user} =
@@ -79,5 +79,18 @@ defmodule Obee.TestHelpers do
       {:ok, video} = Multimedia.create_video(user, attrs)
 
     video
+  end
+
+  def user_video_fixture(user, attrs \\ %{} ) do
+    attrs =
+    Enum.into(attrs, %{
+      title: "Prison Break #{System.unique_integer()}",
+      url: "https://prisonbreak.com",
+      description: "Prison Break Fox movie"
+    })
+
+    {:ok, video} = Multimedia.create_video(user, attrs)
+
+  video
   end
 end

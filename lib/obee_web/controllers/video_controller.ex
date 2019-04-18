@@ -19,14 +19,19 @@ defmodule ObeeWeb.VideoController do
   @spec create(Plug.Conn.t(), map(), Obee.Accounts.User.t()) :: Plug.Conn.t()
   def create(conn, %{"video" => video_params}, current_user) do
     url = video_params["url"]
+    IO.inspect(video_params["file"])
 
-    if(upload = video_params["file"]) do
-      # extension = Path.extname(upload.filename)
-      url = "/media/#{current_user.id}-#{upload.filename}"
-      File.cp(upload.path, url)
+    url = case upload = video_params["file"] do
+      %Plug.Upload{} ->
+        # extension = Path.extname(upload.filename)
+        url = "media/#{current_user.id}-#{upload.filename}"
+        IO.inspect("url in upload: #{url}")
+        File.cp!(upload.path, url)
+        url
+      _ -> video_params["url"]
     end
 
-
+    IO.inspect("result url: #{url}")
 
     attrs = Map.put(video_params, "url", url)
 
