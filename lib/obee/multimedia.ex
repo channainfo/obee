@@ -58,10 +58,35 @@ defmodule Obee.Multimedia do
 
   """
   def create_video(%User{} = user,  attrs \\ %{}) do
+    attrs = set_attrs_with_url(attrs, user)
+
     %Video{}
     |> Video.changeset(attrs)
     |> put_user(user)
     |> Repo.insert()
+  end
+
+  def set_attrs_with_url(attrs, user) do
+    keys = case Map.has_key?(attrs, :url) do
+      true -> {:url, :file}
+      false -> {"url", "file"}
+    end
+    {url_key, file_key} = keys
+
+
+    url_value = case upload = attrs[file_key] do
+      %Plug.Upload{} ->
+        # extension = Path.extname(upload.filename)
+        file_name = "#{user.id}-#{upload.filename}"
+        root = File.cwd!
+        location = "#{root}/media/#{file_name}"
+        File.cp!(upload.path, location)
+        file_name
+      _ ->
+        attrs[url_key]
+    end
+
+    Map.put(attrs, url_key, url_value)
   end
 
   @doc """
@@ -77,6 +102,7 @@ defmodule Obee.Multimedia do
 
   """
   def update_video(%Video{} = video, attrs) do
+    attrs = set_attrs_with_url(attrs, video.user)
     video
     |> Video.changeset(attrs)
     |> Repo.update()

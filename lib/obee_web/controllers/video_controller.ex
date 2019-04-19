@@ -18,27 +18,7 @@ defmodule ObeeWeb.VideoController do
 
   @spec create(Plug.Conn.t(), map(), Obee.Accounts.User.t()) :: Plug.Conn.t()
   def create(conn, %{"video" => video_params}, current_user) do
-    url = video_params["url"]
-    IO.inspect(video_params["file"])
-
-    url = case upload = video_params["file"] do
-      %Plug.Upload{} ->
-        # extension = Path.extname(upload.filename)
-        url = "media/#{current_user.id}-#{upload.filename}"
-        IO.inspect("url in upload: #{url}")
-        File.cp!(upload.path, url)
-        url
-      _ -> video_params["url"]
-    end
-
-    IO.inspect("result url: #{url}")
-
-    attrs = Map.put(video_params, "url", url)
-
-    IO.inspect(String.duplicate("*", 120))
-    IO.inspect(attrs)
-
-    case Multimedia.create_video(current_user, attrs ) do
+    case Multimedia.create_video(current_user, video_params ) do
       {:ok, video} ->
         conn
         |> put_flash(:info, "Video created successfully.")
@@ -62,7 +42,6 @@ defmodule ObeeWeb.VideoController do
 
   def update(conn, %{"id" => id, "video" => video_params}, current_user) do
     video = Multimedia.get_user_video!(current_user, id)
-
     case Multimedia.update_video(video, video_params) do
       {:ok, video} ->
         conn
@@ -83,12 +62,6 @@ defmodule ObeeWeb.VideoController do
     |> redirect(to: Routes.video_path(conn, :index))
   end
 
-  # def action(conn, _) do
-
-  #   args = [ conn, conn.params, conn.assigns.current_user ]
-  #   apply(__MODULE__, action_name(conn), args)
-  # end
-
   def action(conn, _) do
     args = [conn, conn.params, conn.assigns.current_user]
     apply(__MODULE__, action_name(conn), args)
@@ -97,5 +70,20 @@ defmodule ObeeWeb.VideoController do
   defp load_categories(conn, _) do
     assign(conn, :categories, Multimedia.list_alphabetical_categories())
   end
+
+  # def set_attrs_with_url(video_params, current_user) do
+  #   url = case upload = video_params["file"] do
+  #     %Plug.Upload{} ->
+  #       # extension = Path.extname(upload.filename)
+  #       file_name = "#{current_user.id}-#{upload.filename}"
+  #       location = "media/#{file_name}"
+  #       File.cp!(upload.path, location)
+  #       file_name
+  #     _ ->
+  #       video_params["url"]
+  #   end
+
+  #   Map.put(video_params, "url", url)
+  # end
 
 end

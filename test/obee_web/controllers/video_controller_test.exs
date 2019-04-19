@@ -1,10 +1,14 @@
 defmodule ObeeWeb.VideoControllerTest do
   use ObeeWeb.ConnCase
 
-  # alias Obee.Multimedia
+  @create_attrs %{description: "some description",
+                  title: "charlie",
+                  url: "https://www.youtube.com/watch?v=_OBlgSz8sSM",
+                  file: file_upload_fixture("charlie_bit_my_finger.mp4") }
+  @update_attrs %{description: "some updated description",
+                  title: "new charlie",
+                  url: "https://www.youtube.com/watch?v=mU8RDfWJQ-A" }
 
-  @create_attrs %{description: "some description", title: "some title", url: "some url"}
-  @update_attrs %{description: "some updated description", title: "some updated title", url: "some updated url"}
   @invalid_attrs %{description: nil, title: nil, url: nil}
 
   test "requires authentication for all actions", %{conn: conn} do
@@ -54,7 +58,7 @@ defmodule ObeeWeb.VideoControllerTest do
       {:ok, conn: conn, user: user}
     end
 
-    test "lists all user's videos", %{conn: conn, user: user} do
+    test "GET/index: lists all user's videos", %{conn: conn, user: user} do
       user_video = user_video_fixture(user, title: "Prison Break Eps1")
       other_video = video_fixture()
 
@@ -65,36 +69,36 @@ defmodule ObeeWeb.VideoControllerTest do
       refute String.contains?(conn.resp_body, other_video.title)
     end
 
-    test "renders form", %{conn: conn} do
+    test "GET/new: renders form", %{conn: conn} do
       conn = get(conn, Routes.video_path(conn, :new))
       assert html_response(conn, 200) =~ "New Video"
     end
 
-    test "redirects to show when data is valid", %{conn: conn, user: _} do
+    test "POST/create: create record and redirect to show when data is valid", %{conn: conn, user: user} do
       conn = post(conn, Routes.video_path(conn, :create), video: @create_attrs)
-
-      IO.inspect(redirected_params(conn))
-      IO.inspect(conn.assigns[:current_user])
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.video_path(conn, :show, id)
+
+      video = Obee.Multimedia.get_user_video!(user, id)
+      assert video.url == "#{user.id}-charlie_bit_my_finger.mp4"
 
       # conn = get(conn, Routes.video_path(conn, :show, id))
       # assert html_response(conn, 200) =~ "Show Video"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
+    test "POST/create: renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.video_path(conn, :create), video: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Video"
     end
 
-    test "renders form for editing chosen video", %{conn: conn, user: user} do
+    test "GET/edit: renders form for editing chosen video", %{conn: conn, user: user} do
       user_video = user_video_fixture(user, title: "Prison Break Eps1")
       conn = get(conn, Routes.video_path(conn, :edit, user_video))
       assert html_response(conn, 200) =~ "Edit Video"
     end
 
-    test "redirects when data is valid", %{conn: conn, user: user} do
+    test "PUT/update: redirects when data is valid", %{conn: conn, user: user} do
       user_video = user_video_fixture(user, title: "Prison Break Eps1")
       conn = put(conn, Routes.video_path(conn, :update, user_video), video: @update_attrs)
       video = Obee.Multimedia.get_video!(user_video.id)
@@ -104,13 +108,13 @@ defmodule ObeeWeb.VideoControllerTest do
       # assert html_response(conn, 200) =~ "some updated title"
     end
 
-    test "update renders errors when data is invalid", %{conn: conn, user: user} do
+    test "PUT/update: renders errors when data is invalid", %{conn: conn, user: user} do
       user_video = user_video_fixture(user, title: "Prison Break Eps1")
       conn = put(conn, Routes.video_path(conn, :update, user_video), video: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Video"
     end
 
-    test "deletes chosen video", %{conn: conn, user: user} do
+    test "DELETE/delete: delete chosen video", %{conn: conn, user: user} do
       user_video = user_video_fixture(user, title: "Prison Break Eps1")
       conn = delete(conn, Routes.video_path(conn, :delete, user_video))
       assert redirected_to(conn) == Routes.video_path(conn, :index)

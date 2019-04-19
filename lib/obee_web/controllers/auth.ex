@@ -31,19 +31,13 @@ defmodule ObeeWeb.Auth do
 
   def put_current_user(conn, user) do
     token = Phoenix.Token.sign(conn, "user_socket_salt", user.id)
-
-    IO.puts(String.duplicate("-", 80))
-    IO.puts("token: #{token}")
-
     conn
     |> assign(:current_user, user)
     |> assign(:user_token, token)
   end
 
   def login_by_email_and_pass(conn, email, given_pass) do
-    IO.inspect("email: #{email}, pwd: #{given_pass}")
     result = Accounts.authenticate_by_email_and_pass(email, given_pass)
-    IO.inspect(result)
     case result do
       {:ok, user} -> {:ok, login(conn, user)}
       {:error, :unauthorized} -> {:error, :unauthorized, conn}

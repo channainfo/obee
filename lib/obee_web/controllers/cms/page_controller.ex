@@ -4,8 +4,9 @@ defmodule ObeeWeb.CMS.PageController do
   alias Obee.CMS
   alias Obee.CMS.Page
 
+  plug :authenticate_user
   plug :require_existing_author
-  plug :authorize_page when action in [:edit, :update, :delete]
+  plug :authorize_page when action in [:edit, :show, :update, :delete]
 
   defp require_existing_author(conn, _) do
     author = CMS.ensure_author_exists(conn.assigns.current_user)

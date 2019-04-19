@@ -21,10 +21,11 @@ defmodule Obee.TestHelpers do
   # end
 
   def user_fixture(attrs \\ %{}) do
-    valid_attrs =  %{ first_name: "some first_name",
-                      last_name: "some last_name",
-                      username: "some username",
-                      credential: %{ email: "joe#{System.unique_integer()}@gmail.com", password: "12345678" }
+    valid_attrs =  %{ first_name: "first_name",
+                      last_name: "last_name",
+                      username: "username",
+                      credential: %{ email: "joe#{System.unique_integer()}@gmail.com",
+                                     password: "12345678" }
                   }
 
     {:ok, user} =
@@ -91,6 +92,12 @@ defmodule Obee.TestHelpers do
 
     {:ok, video} = Multimedia.create_video(user, attrs)
 
-  video
+    video
+  end
+
+  def file_upload_fixture(filename \\ "default.png") do
+    root = File.cwd!
+    path = "#{root}/test/support/data/#{filename}"
+    %Plug.Upload{path: path, filename: filename}
   end
 end
