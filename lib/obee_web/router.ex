@@ -34,11 +34,15 @@ defmodule ObeeWeb.Router do
     resources "/pages", PageController
   end
 
+  # forward "/graphiql", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema, interface: :simple
 
   # Other scopes may use custom stacks.
-  # scope "/api", ObeeWeb do
-  #   pipe_through :api
-  # end
+  scope "/api" do
+    pipe_through :api
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema
+    forward "/", Absinthe.Plug, schema: ObeeWeb.Schema
+  end
 
 
   # defp authenticate_user(conn, _) do

@@ -68,14 +68,26 @@ defmodule Obee.TestHelpers do
     page
   end
 
+  def category_fixture(name \\ "") do
+    name = case name do
+      "" ->
+        "Category#{System.unique_integer()}"
+      _ ->
+        name
+    end
+    Multimedia.create_category(name)
+  end
+
   def video_fixture( attrs \\ %{} ) do
     user = user_fixture()
+    category = category_fixture()
 
     attrs =
       Enum.into(attrs, %{
         title: "Prison Break #{System.unique_integer()}",
         url: "https://prisonbreak.com",
-        description: "Prison Break Fox movie"
+        description: "Prison Break Fox movie",
+        category_id: category.id
       })
       {:ok, video} = Multimedia.create_video(user, attrs)
 

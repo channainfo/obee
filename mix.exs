@@ -54,7 +54,17 @@ defmodule Obee.MixProject do
       # Password hashing
       {:comeonin, "~> 4.1"},
       {:pbkdf2_elixir, "~> 0.12"},
-      {:torch, "~> 2.0.0-rc.1"}
+
+      # {:torch, "~> 2.0.0-rc.1"},
+      # {:phoenix_oauth2_provider, "~> 0.4.1"},
+
+      {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4"},    # the GraphQL toolkit for Elixir
+      {:absinthe_ecto, "~> 0.1.3"},  # Provides some helper functions for easy batching of Ecto assocations
+      {:absinthe_phoenix, "~> 1.4"}, # Absinthe subscriptions with Phoenix
+
+      {:dataloader, "~> 1.0.0"},
+
     ]
   end
 

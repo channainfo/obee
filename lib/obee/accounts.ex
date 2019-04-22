@@ -66,7 +66,7 @@ defmodule Obee.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    user = %User{}
+    %User{}
     |> User.changeset(attrs)
     |> Ecto.Changeset.cast_assoc(:credential, with: &Credential.changeset/2)
     |> Repo.insert()
