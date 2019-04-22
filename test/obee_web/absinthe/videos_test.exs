@@ -1,4 +1,4 @@
-defmodule ObeeWeb.API.VideosTest do
+defmodule ObeeWeb.Absinthe.VideosTest do
   use ObeeWeb.ConnCase
 
   test "list_videos" do
