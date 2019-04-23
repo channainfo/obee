@@ -23,7 +23,7 @@ defmodule Obee.TestHelpers do
   def user_fixture(attrs \\ %{}) do
     valid_attrs =  %{ first_name: "first_name",
                       last_name: "last_name",
-                      username: "username",
+                      username: "username#{System.unique_integer}",
                       credential: %{ email: "joe#{System.unique_integer()}@gmail.com",
                                      password: "12345678" }
                   }

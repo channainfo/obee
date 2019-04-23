@@ -5,6 +5,8 @@ defmodule ObeeWeb.Schema do
   import_types ObeeWeb.Schema.DateTime
   import_types ObeeWeb.Schema.Multimedia
   import_types ObeeWeb.Schema.Account
+  import_types ObeeWeb.Schema.PaginatedVideos
+  import_types ObeeWeb.Schema.Pagination
 
   alias ObeeWeb.Resolvers.Multimedia
   alias ObeeWeb.Resolvers.Account
@@ -23,6 +25,15 @@ defmodule ObeeWeb.Schema do
       #   {:ok, Obee.Multimedia.list_videos() }
       # end)
     end
+
+    @desc "Get paginate videos"
+    field :paginated_videos, :paginated_videos do
+      arg :pagination, :pagination, description: "Pagination params"
+      resolve &Multimedia.list_paginate_videos/3
+      # resolve(fn _,_, _ ->
+      #   {:ok, Obee.Multimedia.list_videos() }
+      # end)
+    end
   end
 
   mutation do
@@ -37,13 +48,12 @@ defmodule ObeeWeb.Schema do
       resolve(&Account.create_user/3)
     end
 
-    # valid_attrs =  %{ first_name: "first_name",
-    #                   last_name: "last_name",
-    #                   username: "username",
-    #                   credential: %{ email: "joe#{System.unique_integer()}@gmail.com",
-    #                                  password: "12345678" }
-    #               }
+    @desc "Authenticate user with email and password"
+    field(:authenticate, :string) do
+      arg :email, :string, description: "Credential email"
+      arg :password, :string, description: "Credential password"
 
-
+      resolve(&Account.authenticate/3)
+    end
   end
 end

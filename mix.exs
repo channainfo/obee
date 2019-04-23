@@ -64,6 +64,7 @@ defmodule Obee.MixProject do
       {:absinthe_phoenix, "~> 1.4"}, # Absinthe subscriptions with Phoenix
 
       {:dataloader, "~> 1.0.0"},
+      {:scrivener_ecto, "~> 2.0"}, # paginate for paging
 
     ]
   end

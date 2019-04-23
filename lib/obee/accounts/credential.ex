@@ -32,9 +32,9 @@ defmodule Obee.Accounts.Credential do
   def put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass} } ->
-        put_change(changeset, :password_hash, Comeonin.Pbkdf2.hashpwsalt(pass))
-        Ecto.Changeset.put_change(changeset, :password, nil)
-
+        changeset
+        |> put_change(:password, nil)
+        |> put_change(:password_hash, Comeonin.Pbkdf2.hashpwsalt(pass))
       _ ->
         changeset
     end

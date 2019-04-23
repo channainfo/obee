@@ -14,6 +14,10 @@ defmodule ObeeWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :graphql do
+    plug ObeeWeb.AbsintheContext
+  end
+
   scope "/", ObeeWeb do
     pipe_through :browser
     get "/", PageController, :index
@@ -40,7 +44,11 @@ defmodule ObeeWeb.Router do
   scope "/api" do
     pipe_through :api
 
-    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema
+    scope "/graphiql" do
+      pipe_through :graphql
+      forward "/", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema
+    end
+
     forward "/", Absinthe.Plug, schema: ObeeWeb.Schema
   end
 
