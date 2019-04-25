@@ -30,7 +30,7 @@ defmodule ObeeWeb.Auth do
   end
 
   def put_current_user(conn, user) do
-    token = Phoenix.Token.sign(conn, "user_socket_salt", user.id)
+    token = Phoenix.Token.sign(conn, "user_auth_token", user.id)
     conn
     |> assign(:current_user, user)
     |> assign(:user_token, token)

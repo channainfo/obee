@@ -9,7 +9,8 @@ defmodule Obee.MultimediaTest do
     @create_attrs %{description: "charlie description",
                     title: "charlie",
                     url: "https://www.youtube.com/watch?v=_OBlgSz8sSM",
-                    file: file_upload_fixture("charlie_bit_my_finger.mp4") }
+                    file: file_upload_fixture("charlie_bit_my_finger.mp4"
+                    ) }
 
     @update_attrs %{description: "charlie updated description",
                     title: "charlie updated title",
@@ -42,6 +43,16 @@ defmodule Obee.MultimediaTest do
     test "create_video/1 with valid data with file upload creates a video" do
       user = user_fixture()
       assert {:ok, %Video{} = video} = Multimedia.create_video(user, @create_attrs)
+      assert video.description == "charlie description"
+      assert video.title == "charlie"
+      assert video.url == "#{user.id}-charlie_bit_my_finger.mp4"
+    end
+
+    test "create_video/1 with valid data and category_id with category loaded" do
+      user = user_fixture()
+      category = category_fixture("action")
+      attrs = Enum.into(@create_attrs, %{category_id: category.id})
+      assert {:ok, %Video{} = video} = Multimedia.create_video(user, attrs)
       assert video.description == "charlie description"
       assert video.title == "charlie"
       assert video.url == "#{user.id}-charlie_bit_my_finger.mp4"

@@ -15,7 +15,7 @@ defmodule ObeeWeb.Absinthe.VideosTest do
     }
     """
 
-    context =  %{current_user: video.user}
+    context =  %{user_id: video.user_id}
     result = Absinthe.run(query, ObeeWeb.Schema, context: context)
     {:ok, %{data: %{ "videos" => videos }}} = result
     video_result = List.first(videos)

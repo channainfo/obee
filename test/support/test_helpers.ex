@@ -112,4 +112,8 @@ defmodule Obee.TestHelpers do
     path = "#{root}/test/support/data/#{filename}"
     %Plug.Upload{path: path, filename: filename}
   end
+
+  def user_signed_token(user_id) do
+    Phoenix.Token.sign(ObeeWeb.Endpoint, "user_auth_token", user_id)
+  end
 end

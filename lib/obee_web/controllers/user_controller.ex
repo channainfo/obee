@@ -4,8 +4,8 @@ defmodule ObeeWeb.UserController do
   alias Obee.Accounts
   alias Obee.Accounts.User
 
-  # plug :authenticate_user when action in [:index, :show]
-  plug :authenticate_user
+  plug :authenticate_user when action in [:index, :show]
+  # plug :authenticate_user
 
   def index(conn, _params) do
     users = Accounts.list_users()

@@ -2,7 +2,7 @@ defmodule Obee.Multimedia do
   @moduledoc """
   The Multimedia context.
   """
-
+  import Ecto.Changeset
   import Ecto.Query, warn: false
   alias Obee.Repo
 
@@ -59,12 +59,24 @@ defmodule Obee.Multimedia do
   """
   def create_video(%User{} = user,  attrs \\ %{}) do
     attrs = set_attrs_with_url(attrs, user)
-
-    %Video{}
+    changeset = %Video{}
     |> Video.changeset(attrs)
-    |> put_user(user)
+    |> put_assoc(:user, user)
+
+    changeset = case Map.has_key?(attrs, "category_id") || Map.has_key?(attrs, :category_id ) do
+      true ->
+        category = get_category!(attrs.category_id)
+        changeset
+        |> put_assoc(:category, category)
+      _ ->
+        changeset
+    end
+
+    changeset
     |> Repo.insert()
   end
+
+  # Ecto.Changeset.put_assoc(changeset, :user, user)
 
   def set_attrs_with_url(attrs, user) do
     keys = case Map.has_key?(attrs, :url) do
@@ -136,7 +148,7 @@ defmodule Obee.Multimedia do
   def change_video(%User{} = user, %Video{} = video) do
     video
     |> Video.changeset(%{})
-    |> put_user(user)
+    |> put_assoc(:user, user)
   end
 
   def put_user(changeset, user) do
@@ -170,6 +182,10 @@ defmodule Obee.Multimedia do
     Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
   end
 
+  def get_category!(id)do
+    Repo.get(Obee.Multimedia.Category, id)
+  end
+
   def list_alphabetical_categories do
     Category
     |> Category.alphabetical()
@@ -179,7 +195,7 @@ defmodule Obee.Multimedia do
   def annotate_video(%User{} = user, video_id, attrs) do
     %Annotation{video_id: video_id}
     |> Annotation.changeset(attrs)
-    |> put_user(user)
+    |> put_assoc(:user, user)
     |> Repo.insert()
   end
 

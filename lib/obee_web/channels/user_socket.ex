@@ -1,5 +1,6 @@
 defmodule ObeeWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket, schema: ObeeWeb.Schema
 
   ## Channels
   # channel "room:*", ObeeWeb.RoomChannel
@@ -19,12 +20,15 @@ defmodule ObeeWeb.UserSocket do
   # performing token verification on connect.
 
   def connect(%{"token" => token}, socket) do
-    max_age = 2 * 7 * 24 * 3600
-    result = Phoenix.Token.verify(socket, "user_socket_salt", token, max_age: max_age)
-
+    one_day = 86_400
+    result = Phoenix.Token.verify(socket, "user_auth_token", token, max_age: one_day)
     case result do
       {:ok, user_id} ->
-        {:ok, assign(socket, :user_id, user_id)}
+
+        socket = socket
+                  |> assign(:user_id, user_id)
+                  |> assign(:context, %{user_id: user_id})
+        {:ok, socket}
 
       {:error, _reason} ->
         :error

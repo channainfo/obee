@@ -37,15 +37,24 @@ defmodule ObeeWeb.Schema do
   end
 
   mutation do
-    @desc "Create a video"
+    @desc "Create a user"
     field(:create_user, :user) do
       arg :first_name, :string
       arg :last_name, :string
       arg :username, :string
       arg :credential, :credential_input
 
-
       resolve(&Account.create_user/3)
+    end
+
+    @desc "Create a video"
+    field(:create_video, :video) do
+      arg :title, :string
+      arg :description, :string
+      arg :url, :string
+      arg :category_id, :integer
+
+      resolve(&Multimedia.create_video/3)
     end
 
     @desc "Authenticate user with email and password"
@@ -54,6 +63,19 @@ defmodule ObeeWeb.Schema do
       arg :password, :string, description: "Credential password"
 
       resolve(&Account.authenticate/3)
+    end
+  end
+
+  subscription do
+    @desc "Get notified when a video added"
+    field(:video_added, :video) do
+      config( fn(_args, _resolution) ->
+        {:ok, topic: :global}
+      end)
+
+      trigger(:create_video, topic: fn( _video ) ->
+        :global
+      end)
     end
   end
 end

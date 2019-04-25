@@ -6,14 +6,17 @@ defmodule Obee.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository
       Obee.Repo,
       # Start the endpoint when the application starts
-      ObeeWeb.Endpoint
+      ObeeWeb.Endpoint,
       # Starts a worker by calling: Obee.Worker.start_link(arg)
-      # {Obee.Worker, arg},
+      # {Obee.Worker, arg}
+      supervisor(Absinthe.Subscription, [ObeeWeb.Endpoint])
+
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

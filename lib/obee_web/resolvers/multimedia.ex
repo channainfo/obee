@@ -1,5 +1,18 @@
 defmodule ObeeWeb.Resolvers.Multimedia do
-  def list_videos(_parent, _args, %{context: %{ current_user: %Obee.Accounts.User{} } }) do
+  def create_video(_parent, args, %{context: %{ user_id: user_id } } ) do
+    user = Obee.Accounts.get_user(user_id)
+    {:ok, video } = Obee.Multimedia.create_video(user, args)
+    {:ok, video}
+  end
+
+  def create_video( _parent , _args, _resolution ) do
+    # user = Obee.Accounts.get_user(user_id)
+    # {:ok, video } = Obee.Multimedia.create_video(user, args)
+    # {:ok, video}
+    {:error, :unauthorized}
+  end
+
+  def list_videos(_parent, _args, %{context: %{ user_id: _user_id} }) do
     {:ok, Obee.Multimedia.list_videos() }
   end
 

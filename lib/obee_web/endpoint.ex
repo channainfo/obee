@@ -1,5 +1,6 @@
 defmodule ObeeWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :obee
+  use Absinthe.Phoenix.Endpoint
 
   socket "/socket", ObeeWeb.UserSocket,
     websocket: true,
