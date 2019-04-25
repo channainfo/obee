@@ -46,7 +46,9 @@ defmodule ObeeWeb.Router do
 
     scope "/graphiql" do
       pipe_through :graphql
-      forward "/", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema
+      if Mix.env == :dev do
+        forward "/", Absinthe.Plug.GraphiQL, schema: ObeeWeb.Schema
+      end
     end
 
     forward "/", Absinthe.Plug, schema: ObeeWeb.Schema
